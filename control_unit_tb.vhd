@@ -33,43 +33,66 @@ architecture tb of controlUnit_tb is
 	 tb_C : process
 	       	constant clk_period : time := 10 ns;
 		begin 
-			-- reset_tb <= '1';
-			-- clk_tb <= '0';
-			wait for clk_period;
-
-			-- reset_tb <= '0';	
 			-- R-types instruction
 			instr_tb <= "000000";
+			reset_tb <= '0';	
+			clk_tb <= '0';
 			wait for clk_period;
+			
+			clk_tb <= '1';
+			wait for clk_period;
+
+			assert(RegDst_tb = '1' and RegWrite_tb = '1' and ALUSrc_tb = '0' and Memwrite_tb = '0' and MemRead_tb = '0' and MemtoReg_tb = '0' and ALUOp_tb = "10" and Jump_tb = '-' and Branch_tb = '-')
+				report "test faile for R type instruction" severity error;
 
 			-- Load word 
 			instr_tb <= "100011";
+			clk_tb <= '0';
 			wait for clk_period;
+
+			clk_tb <= '1';
+			wait for clk_period;
+
+			
+			assert(RegDst_tb = '0' and RegWrite_tb = '1' and ALUSrc_tb = '1' and Memwrite_tb = '0' and MemRead_tb = '1' and MemtoReg_tb = '1' and ALUOp_tb = "00" and Jump_tb = '-' and Branch_tb = '-')
+				report "test faile for LW instruction" severity error;
 
 			-- Store word
 			instr_tb <= "101011";
+			clk_tb <= '0';
 			wait for clk_period;
+
+			clk_tb <= '1';
+			wait for clk_period;
+
+			
+			assert(RegDst_tb = '-' and RegWrite_tb = '0' and ALUSrc_tb = '1' and Memwrite_tb = '1' and MemRead_tb = '0' and MemtoReg_tb = '-' and ALUOp_tb = "00" and Jump_tb = '-' and Branch_tb = '-')
+				report "test faile for SW instruction" severity error;
 
 			-- Branch equal
 			instr_tb <= "000100";
+			clk_tb <= '0';
 			wait for clk_period;
+
+			clk_tb <= '1';
+			wait for clk_period;
+
+			
+			assert(RegDst_tb = '-' and RegWrite_tb = '0' and ALUSrc_tb = '0' and Memwrite_tb = '0' and MemRead_tb = '0' and MemtoReg_tb = '-' and ALUOp_tb = "01" and Jump_tb = '1' and Branch_tb = '1')
+				report "test faile for SW instruction" severity error;
 
 			-- Jump
 			instr_tb <= "000010";
+			clk_tb <= '0';
 			wait for clk_period;
 
-			-- Fail test
-			instr_tb <= "111000";
+			clk_tb <= '1';
 			wait for clk_period;
-			assert false
-			report "Test failed for instruction = 111000" severity error;
+
+			
+			assert(RegDst_tb = '-' and RegWrite_tb = '0' and ALUSrc_tb = '0' and Memwrite_tb = '0' and MemRead_tb = '0' and MemtoReg_tb = '-' and ALUOp_tb = "11" and Jump_tb = '1' and Branch_tb = '0')
+				report "test faile for SW instruction" severity error;
 
 			wait;
 		end process;
    end tb;
-	
-
-
-	
-
-		
